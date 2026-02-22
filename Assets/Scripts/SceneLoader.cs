@@ -5,8 +5,11 @@ using System.Collections;
 
 public class SceneLoader : MonoBehaviour
 {
-    [SerializeField] private GameObject loadingScreen;
-    [SerializeField] private Slider progressBar;
+    [SerializeField] private GameObject _loadingScreenPrefab;
+    private GameObject _currentLoadingScreen;
+
+    private Slider _progressBar;
+    private Text _progressText;
 
     public void LoadScene(string sceneName)
     {
@@ -20,8 +23,14 @@ public class SceneLoader : MonoBehaviour
 
     private IEnumerator LoadSceneAsync(string sceneName)
     {
-        if (loadingScreen != null)
-            loadingScreen.SetActive(true);
+        if (_loadingScreenPrefab != null)
+        {
+            _currentLoadingScreen = Instantiate(_loadingScreenPrefab);
+            DontDestroyOnLoad(_currentLoadingScreen);
+
+            _progressBar = _currentLoadingScreen.GetComponentInChildren<Slider>();
+            _progressText = _currentLoadingScreen.GetComponentInChildren<Text>();
+        }
 
         AsyncOperation operation = SceneManager.LoadSceneAsync(sceneName);
 
@@ -29,13 +38,16 @@ public class SceneLoader : MonoBehaviour
         {
             float progressValue = Mathf.Clamp01(operation.progress / 0.9f);
 
-            if (progressBar != null)
-                progressBar.value = progressValue;
+            if (_progressBar != null)
+                _progressBar.value = progressValue;
+
+            if (_progressText != null)
+                _progressText.text = (progressValue * 100f).ToString("F0") + "%";
 
             yield return null;
         }
 
-        if (loadingScreen != null)
-            loadingScreen.SetActive(false);
+        if (_loadingScreenPrefab != null)
+            Destroy(_currentLoadingScreen);
     }
 }
