@@ -29,5 +29,6 @@ public class GameManager : MonoBehaviour
 
     public void LoadMainMenu() => sceneLoader.LoadScene("MainMenu");
     public void LoadGameScene() => sceneLoader.LoadScene("Game");
+    public void LoadSettingScene() => sceneLoader.LoadScene("Setting");
     public void QuitGame() => Application.Quit();
 }
