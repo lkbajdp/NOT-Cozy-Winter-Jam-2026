@@ -9,7 +9,7 @@ public class MainMenu : MonoBehaviour
 
     public void OpenSettingButtonClick()
     {
-        //...
+        GameManager.Instance.LoadSettingScene();
     }
 
     public void QuitGameButtonClick()
