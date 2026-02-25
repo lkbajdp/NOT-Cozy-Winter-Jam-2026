@@ -353,6 +353,7 @@ GameObject:
   - component: {fileID: 1630225985}
   - component: {fileID: 1630225989}
   - component: {fileID: 1630225988}
+  - component: {fileID: 1630225990}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -458,10 +459,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f3e90eb21b9efd48b1592c0375ba60f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInputHandler
-  playerCamera: {fileID: 519420031}
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 0
 --- !u!114 &1630225989
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -474,7 +471,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2da45389333c0242b3de05b85380cc4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
-  _moveDuration: 0.2
+--- !u!114 &1630225990
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1630225984}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56ab6ac0f95376a498f1e2257c61ad00, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  _input: {fileID: 1630225988}
+  _movement: {fileID: 1630225989}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
