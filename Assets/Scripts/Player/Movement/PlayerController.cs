@@ -15,7 +15,7 @@ public class PlayerController : MonoBehaviour
     {
         if (_input.TryGetClickPosition(out Vector3 position))
         {
-            _movement.MoveToPosition(position);
+            StartCoroutine(_movement.MoveCoroutine(position));
         }
     }
 }
