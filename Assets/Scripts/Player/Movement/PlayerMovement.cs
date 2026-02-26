@@ -7,23 +7,32 @@ public class PlayerMovement : MonoBehaviour
 
     public bool IsMoving { get; private set; }
 
+    public event System.Action<Vector2Int> OnMoveCompleted;
 
-    public IEnumerator MoveCoroutine(Vector3 targetPosition)
+
+    public IEnumerator MoveCoroutine(Vector3 targetWorldPosition, Vector2Int targetCellPosition)
     {
-        if (IsMoving) yield break;
-
         IsMoving = true;
-        Vector3 currentPosition = transform.position;
+        Vector3 currentWorldPosition = transform.position;
         float elapsed = 0f;
 
         while (elapsed < _moveDuration)
         {
             elapsed += Time.deltaTime;
-            transform.position = Vector3.Lerp(currentPosition, targetPosition, elapsed / _moveDuration);
+            transform.position = Vector3.Lerp(currentWorldPosition, targetWorldPosition, elapsed / _moveDuration);
             yield return null;
         }
 
-        transform.position = targetPosition;
+        transform.position = targetWorldPosition;
         IsMoving = false;
+        OnMoveCompleted?.Invoke(targetCellPosition);
+    }
+
+    public void MoveToCell(Vector2Int targetCellPosition)
+    {
+        if (IsMoving) return;
+
+        Vector3 targetWorldPosition = GridManager.Instance.Converter.CellToWorld(targetCellPosition);
+        StartCoroutine(MoveCoroutine(targetWorldPosition, targetCellPosition));
     }
 }

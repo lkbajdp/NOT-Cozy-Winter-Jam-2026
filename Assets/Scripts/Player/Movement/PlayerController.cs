@@ -19,7 +19,7 @@ public class PlayerController : MonoBehaviour
 
             if (GridManager.Instance.Data.IsInGrid(targetPosition))
             {
-                StartCoroutine(_movement.MoveCoroutine(position));
+                _movement.MoveToCell(targetPosition);
             }
         }
     }
