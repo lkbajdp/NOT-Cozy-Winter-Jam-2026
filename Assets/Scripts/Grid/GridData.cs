@@ -2,17 +2,17 @@ using UnityEngine;
 
 public class GridData : MonoBehaviour
 {
-    public int width { get; }
-    public int height { get; }
+    public int Width { get; }
+    public int Height { get; }
 
     private Tile[,] _tile;
 
     public GridData(int width, int height)
     {
-        this.width = width;
-        this.height = height;
+        Width = width;
+        Height = height;
 
-        _tile = new Tile[this.width, this.height];
+        _tile = new Tile[this.Width, this.Height];
     }
 
     private Tile GetTile(int x, int y)

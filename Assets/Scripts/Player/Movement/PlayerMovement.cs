@@ -5,14 +5,14 @@ public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] float _moveDuration = 0.2f;
 
-    public bool isMoving { get; private set; }
+    public bool IsMoving { get; private set; }
 
 
     public IEnumerator MoveCoroutine(Vector3 targetPosition)
     {
-        if (isMoving) yield break;
+        if (IsMoving) yield break;
 
-        isMoving = true;
+        IsMoving = true;
         Vector3 currentPosition = transform.position;
         float elapsed = 0f;
 
@@ -24,6 +24,6 @@ public class PlayerMovement : MonoBehaviour
         }
 
         transform.position = targetPosition;
-        isMoving = false;
+        IsMoving = false;
     }
 }

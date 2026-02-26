@@ -2,17 +2,17 @@ using UnityEngine;
 
 public class Tile : MonoBehaviour
 {
-    public Vector2Int position { get; private set; }
-    public bool isWalkable { get;  set; }
-    public bool isObstacle { get; set; }
-    public GameObject obstacleObject { get; set; }
+    public Vector2Int Position { get; private set; }
+    public bool IsWalkable { get;  set; }
+    public bool IsObstacle { get; set; }
+    public GameObject ObstacleObject { get; set; }
 
 
     public Tile(Vector2Int position)
     {
-        this.position = position;
-        isWalkable = true;
-        isObstacle = false;
-        obstacleObject = null;
+        Position = position;
+        IsWalkable = true;
+        IsObstacle = false;
+        ObstacleObject = null;
     }
 }
