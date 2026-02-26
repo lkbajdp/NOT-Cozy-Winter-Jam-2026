@@ -1,9 +1,9 @@
 using UnityEngine;
 
-public class GridData : MonoBehaviour
+public class GridData
 {
-    public int Width { get; }
-    public int Height { get; }
+    public int Width { get; private set; }
+    public int Height { get; private set; }
 
     private Tile[,] _tiles;
 
@@ -11,6 +11,8 @@ public class GridData : MonoBehaviour
     {
         Width = width;
         Height = height;
+
+        _tiles = new Tile[Width, Height];
 
         for (int x = 0; x < width; x++)
         {
@@ -28,6 +30,6 @@ public class GridData : MonoBehaviour
 
     public bool IsInGrid(Vector2Int coordinate)
     {
-        return (coordinate.x <= 0 && coordinate.x < Width && coordinate.y >= 0 && coordinate.y < Height);
+        return (coordinate.x >= 0 && coordinate.x < Width && coordinate.y >= 0 && coordinate.y < Height);
     }
 }

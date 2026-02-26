@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class GridConverter : MonoBehaviour
+public class GridConverter
 {
     private float _cellSize;
     private Vector2 _origin;

@@ -9,7 +9,7 @@ public class GridManager : MonoBehaviour
     [SerializeField] private int _width = 32;
     [SerializeField] private int _height = 32;
     [SerializeField] private float _cellSize = 1f;
-    [SerializeField] private Vector2 _origin;
+    [SerializeField] private Vector2 _origin = new Vector2Int(0, 0);
 
 
     private void Awake()
