@@ -15,7 +15,12 @@ public class PlayerController : MonoBehaviour
     {
         if (_input.TryGetClickPosition(out Vector3 position))
         {
-            StartCoroutine(_movement.MoveCoroutine(position));
+            Vector2Int targetPosition = GridManager.Instance.Converter.WorldToCell(position);
+
+            if (GridManager.Instance.Data.IsInGrid(targetPosition))
+            {
+                StartCoroutine(_movement.MoveCoroutine(position));
+            }
         }
     }
 }
