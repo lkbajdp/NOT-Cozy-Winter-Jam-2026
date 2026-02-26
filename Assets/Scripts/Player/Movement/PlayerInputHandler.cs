@@ -17,7 +17,7 @@ public class PlayerInputHandler : MonoBehaviour
 
             position = Camera.main.ScreenToWorldPoint(new Vector3(mouseScreenPosition.x, mouseScreenPosition.y, Camera.main.nearClipPlane));
 
-            Debug.Log(position);
+            //Debug.Log(position);
 
             return true;
         }

@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.Accessibility;
+using System.Collections.Generic;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -10,29 +12,38 @@ public class PlayerMovement : MonoBehaviour
     public event System.Action<Vector2Int> OnMoveCompleted;
 
 
-    public IEnumerator MoveCoroutine(Vector3 targetWorldPosition, Vector2Int targetCellPosition)
+    public void MoveAlongPath(List<Vector2Int> path)
     {
-        IsMoving = true;
-        Vector3 currentWorldPosition = transform.position;
-        float elapsed = 0f;
-
-        while (elapsed < _moveDuration)
-        {
-            elapsed += Time.deltaTime;
-            transform.position = Vector3.Lerp(currentWorldPosition, targetWorldPosition, elapsed / _moveDuration);
-            yield return null;
-        }
-
-        transform.position = targetWorldPosition;
-        IsMoving = false;
-        OnMoveCompleted?.Invoke(targetCellPosition);
+        if (IsMoving || path == null || path.Count == 0) return;
+        StartCoroutine(MoveCoroutine(path));
     }
 
-    public void MoveToCell(Vector2Int targetCellPosition)
+    private IEnumerator MoveCoroutine(List<Vector2Int> path)
     {
-        if (IsMoving) return;
+        IsMoving = true;
 
-        Vector3 targetWorldPosition = GridManager.Instance.Converter.CellToWorld(targetCellPosition);
-        StartCoroutine(MoveCoroutine(targetWorldPosition, targetCellPosition));
+        foreach (Vector2Int cell in path)
+        {
+            Vector3 targetPos = GridManager.Instance.Converter.CellToWorld(cell);
+
+            float elapsed = 0f;
+            Vector3 startPos = transform.position;
+
+            while (elapsed < _moveDuration)
+            {
+                elapsed += Time.deltaTime;
+                float t = elapsed / _moveDuration;
+                transform.position = Vector3.Lerp(startPos, targetPos, t);
+                yield return null;
+            }
+
+            transform.position = targetPos;
+
+            Player.Instance.GridTracker.UpdatePosition(cell);
+
+            Debug.Log($"({cell.x}, {cell.y})");
+        }
+
+        IsMoving = false;
     }
 }

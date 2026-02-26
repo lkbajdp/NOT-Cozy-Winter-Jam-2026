@@ -23,7 +23,7 @@ public class GridData
         }
     }
 
-    private Tile GetTile(Vector2Int coordinate)
+    public Tile GetTile(Vector2Int coordinate)
     {
         return _tiles[coordinate.x, coordinate.y];
     }
