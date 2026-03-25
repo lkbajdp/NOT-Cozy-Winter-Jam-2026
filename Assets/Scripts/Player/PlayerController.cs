@@ -1,30 +1,43 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Windows;
+using VContainer;
 
-public class PlayerController : MonoBehaviour
+
+public class PlayerController
 {
-    private void Update()
+    private readonly IPlayer _player;
+    private readonly IGridManager _gridManager;
+    private readonly IInputHandler _inputHandler;
+
+    
+    public PlayerController(IPlayer player, IGridManager gridManager, IInputHandler inputHandler)
     {
-        CheckAndMove();
+        _player = player;
+        _gridManager = gridManager;
+        _inputHandler = inputHandler;
     }
 
-
-    private void CheckAndMove()
+    public void HandleUpdate()
     {
-        if (Player.Instance.Movement.IsMoving) return;
+        if (_player.Movement.IsMoving) return;
 
-        if (Player.Instance.Input.TryGetClickPosition(out Vector3 clickPos))
+        if (_inputHandler.TryGetClickPosition(out Vector3 clickPos))
         {
-            Vector2Int targetCell = GridManager.Instance.Converter.WorldToCell(clickPos);
-            Vector2Int currentCell = Player.Instance.GridTracker.CurrentCell;
+            Vector2Int targetCell = _gridManager.Converter.WorldToCell(clickPos);
 
-            if (!GridManager.Instance.Data.IsInGrid(targetCell)) return;
+            if (!_gridManager.Data.IsInGrid(targetCell)) return;
 
-            List<Vector2Int> path = GridManager.Instance.Pathfinder.FindPath(currentCell, targetCell);
+            Vector2Int currentCell = _player.GridTracker.CurrentCell;
+
+            List<Vector2Int> path = _gridManager.Pathfinder.FindPath(currentCell, targetCell);
 
             if (path.Count > 0)
             {
-                Player.Instance.Movement.MoveAlongPath(path);
+                _player.Movement.MoveAlongPath(path, (cell) =>
+                {
+                    _player.GridTracker.UpdatePosition(cell);
+                });
             }
         }
     }

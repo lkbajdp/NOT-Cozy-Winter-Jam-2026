@@ -1,5 +1,6 @@
 using UnityEngine;
 
+
 public class GridData
 {
     public int Width { get; private set; }

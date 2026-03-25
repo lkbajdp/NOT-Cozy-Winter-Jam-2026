@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+
 public class PlayerInputHandler : MonoBehaviour
 {
     public bool TryGetClickPosition(out Vector3 position)

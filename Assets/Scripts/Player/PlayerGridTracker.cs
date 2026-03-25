@@ -1,5 +1,6 @@
 using UnityEngine;
 
+
 public class PlayerGridTracker : MonoBehaviour
 {
     public Vector2Int CurrentCell { get; private set; }

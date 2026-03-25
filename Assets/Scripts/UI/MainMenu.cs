@@ -2,14 +2,22 @@ using UnityEngine;
 
 public class MainMenu : MonoBehaviour
 {
+    private readonly GameManager _gameManager;
+    
+
+    public MainMenu(GameManager gameManager)
+    {
+        _gameManager = gameManager;
+    }
+
     public void PlayGameButtonClick()
     {
-        GameManager.Instance.LoadGameScene();
+        _gameManager.LoadGameScene();
     }
 
     public void OpenSettingButtonClick()
     {
-        GameManager.Instance.LoadSettingScene();
+        _gameManager.LoadSettingScene();
     }
 
     public void QuitGameButtonClick()

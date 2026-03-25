@@ -1,49 +1,57 @@
+using System.Collections.Generic;
 using UnityEngine;
 using System.Collections;
-using UnityEngine.Accessibility;
-using System.Collections.Generic;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : IPlayerMovement
 {
-    [SerializeField] float _moveDuration = 0.2f;
+    private readonly IGridManager _gridManager;
+    private readonly MonoBehaviour _coroutineRunner;
+    private readonly Transform _playerTransform;
 
-    public bool IsMoving { get; private set; }
+    private bool _isMoving;
 
-    public event System.Action<Vector2Int> OnMoveCompleted;
+    public bool IsMoving => _isMoving;
 
-
-    public void MoveAlongPath(List<Vector2Int> path)
+    public PlayerMovement(
+        IGridManager gridManager,
+        MonoBehaviour coroutineRunner,
+        Transform playerTransform)
     {
-        if (IsMoving || path == null || path.Count == 0) return;
-        StartCoroutine(MoveCoroutine(path));
+        _gridManager = gridManager;
+        _coroutineRunner = coroutineRunner;
+        _playerTransform = playerTransform;
     }
 
-    private IEnumerator MoveCoroutine(List<Vector2Int> path)
+    public void MoveAlongPath(List<Vector2Int> path, System.Action<Vector2Int> onCellReached)
     {
-        IsMoving = true;
+        if (_isMoving || path == null || path.Count == 0) return;
+        _coroutineRunner.StartCoroutine(MoveCoroutine(path, onCellReached));
+    }
+
+    private IEnumerator MoveCoroutine(List<Vector2Int> path, System.Action<Vector2Int> onCellReached)
+    {
+        _isMoving = true;
+        float moveDuration = 0.2f;
 
         foreach (Vector2Int cell in path)
         {
-            Vector3 targetPos = GridManager.Instance.Converter.CellToWorld(cell);
+            Vector3 targetPos = _gridManager.Converter.CellToWorld(cell);
 
             float elapsed = 0f;
-            Vector3 startPos = transform.position;
+            Vector3 startPos = _playerTransform.position;
 
-            while (elapsed < _moveDuration)
+            while (elapsed < moveDuration)
             {
                 elapsed += Time.deltaTime;
-                float t = elapsed / _moveDuration;
-                transform.position = Vector3.Lerp(startPos, targetPos, t);
+                float t = elapsed / moveDuration;
+                _playerTransform.position = Vector3.Lerp(startPos, targetPos, t);
                 yield return null;
             }
 
-            transform.position = targetPos;
-
-            Player.Instance.GridTracker.UpdatePosition(cell);
-
-            Debug.Log($"({cell.x}, {cell.y})");
+            _playerTransform.position = targetPos;
+            onCellReached?.Invoke(cell);
         }
 
-        IsMoving = false;
+        _isMoving = false;
     }
 }

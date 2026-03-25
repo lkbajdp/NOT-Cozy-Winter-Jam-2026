@@ -1,39 +1,50 @@
+using System;
 using UnityEngine;
+using VContainer;
 
-public class Player : MonoBehaviour
+
+public class Player : MonoBehaviour, IPlayer
 {
-    public static Player Instance { get; private set; }
-    public PlayerInputHandler Input { get; private set; }
-    public PlayerMovement Movement { get; private set; }
-    public PlayerGridTracker GridTracker { get; private set; }
+    [SerializeField] private PlayerInputHandler _inputHandler;
+    [SerializeField] private PlayerGridTracker _gridTracker;
+
+    private PlayerMovement _movement;
+
+    public PlayerMovement Movement => _movement;
+
+    public PlayerInputHandler InputHandler => _inputHandler;
+    public PlayerGridTracker GridTracker => _gridTracker;
+
+    private IGridManager _gridManager;
 
 
-    private void Awake()
+    [Inject]
+    public void Construct(IGridManager gridManager)
     {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-
-        else
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        Input = GetComponent<PlayerInputHandler>();
-        Movement = GetComponent<PlayerMovement>();
-        GridTracker = GetComponent<PlayerGridTracker>();
+        _gridManager = gridManager;
+        _movement = new PlayerMovement(gridManager, this, transform);
     }
 
     private void Start()
     {
-        if (GridManager.Instance == null)
+        if (_gridManager == null || !_gridManager.IsInitialized)
         {
+            Debug.Log("NOT GridManager in Player");
             return;
         }
 
-        Vector2Int startCell = GridManager.Instance.Converter.WorldToCell(transform.position);
-        GridTracker.Initialize(startCell);
+        Vector2Int startCellPosition = _gridManager.Converter.WorldToCell(transform.position);
+        _gridTracker.Initialize(startCellPosition);
+    }
+
+    public void SetPosition(Vector2Int cellPosition)
+    {
+        transform.position = _gridManager.Converter.CellToWorld(cellPosition);
+        _gridTracker.UpdatePosition(cellPosition);
+    }
+
+    private void OnDestroy()
+    {
+        (_movement as IDisposable)?.Dispose();
     }
 }

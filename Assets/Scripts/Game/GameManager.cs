@@ -1,37 +1,57 @@
+using VContainer;
+using VContainer.Unity;
 using UnityEngine;
 
-public class GameManager : MonoBehaviour
+public class GameManager : IInitializable, ITickable
 {
-    public static GameManager Instance { get; private set; }
+    private readonly IPlayer _player;
+    private readonly IGridManager _gridManager;
+    private readonly SceneLoader _sceneLoader;
+    private readonly PlayerController _playerController;
 
-    [SerializeField] private SceneLoader sceneLoader;
-    private GameState currentState;
+    private GameState _currentState;
 
-    public GameState CurrentState => currentState;
-    public event System.Action<GameState> OnStateChanged;
-
-    void Awake()
+    public GameManager(
+        IPlayer player,
+        IGridManager gridManager,
+        SceneLoader sceneLoader,
+        PlayerController playerController
+        )
     {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
+        _player = player;
+        _gridManager = gridManager;
+        _sceneLoader = sceneLoader;
+        _playerController = playerController;
+        _currentState = GameState.MainMenu;
+    }
 
-        else
+    public void Initialize()
+    {
+        Debug.Log("GameManager инициализирвоан");
+        ChangeState(GameState.Playing);
+    }
+
+    public void Tick()
+    {
+        if (_currentState == GameState.Playing)
         {
-            Destroy(gameObject);
+            _playerController.HandleUpdate();
         }
     }
 
     public void ChangeState(GameState newState)
     {
-        currentState = newState;
-        OnStateChanged?.Invoke(newState);
+        _currentState = newState;
+        Debug.Log($"State is changed:{newState} ");
     }
 
-    public void LoadMainMenu() => sceneLoader.LoadScene("MainMenu");
-    public void LoadGameScene() => sceneLoader.LoadScene("Game");
-    public void LoadSettingScene() => sceneLoader.LoadScene("Setting");
-    public void QuitGame() => Application.Quit();
+    public void LoadGameScene()
+    {
+        _sceneLoader.LoadScene("Gamee");
+    }
+
+    public void LoadSettingScene()
+    {
+        _sceneLoader.LoadScene("Setting");
+    }
 }
